@@ -1,0 +1,20 @@
+- job:
+    name: cloudmon-plugin-smtp-build-image
+    parent: otc-build-docker-image
+    description: Build cloudmon-plugin-smtp container image
+    provides: cloudmon-plugin-smtp-container-image
+    vars: &cloudmon-plugin-smtp_image_vars
+      zuul_work_dir: "{{ zuul.projects['github.com/opentelekomcloud-infra/cloudmon-plugin-smtp'].src_dir }}"
+      docker_images:
+        - context: .
+          repository: opentelekomcloud/cloudmon-plugin-smtp
+          tags:
+            &imagetag "{{ zuul.tag is defined | ternary([zuul.get('tag', '').split('.')[0], '.'.join(zuul.get('tag', '').split('.')[:2]), zuul.get('tag', '')], ['latest']) }}"
+
+- project:
+    merge-mode: squash-merge
+    default-branch: main
+    check:
+      - cloudmon-plugin-smtp-build-image
+    gate:
+      - cloudmon-plugin-smtp-build-image

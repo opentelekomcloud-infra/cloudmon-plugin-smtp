@@ -1,0 +1,20 @@
+[package]
+name = "cloudmon-plugin-smtp"
+version = "0.0.1"
+edition = "2021"
+
+[dependencies]
+log = { version = "0.4", features = ["std", "serde"] }
+env_logger = "0.9.0"
+serde = { version = "1.0", features = ["derive"] }
+serde_yaml = "0.8"
+statsd = "^0.13.1"
+threadpool = "1.8.1"
+
+[[bin]]
+name = "cloudmon-plugin-smtp"
+test = false
+bench = false
+
+[target.'cfg(all(target_env = "musl", target_pointer_width = "64"))'.dependencies.jemallocator]
+version = "0.3"
