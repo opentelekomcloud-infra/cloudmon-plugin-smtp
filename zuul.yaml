@@ -11,10 +11,18 @@
           tags:
             &imagetag "{{ zuul.tag is defined | ternary([zuul.get('tag', '').split('.')[0], '.'.join(zuul.get('tag', '').split('.')[:2]), zuul.get('tag', '')], ['latest']) }}"
 
+- job:
+    name: cloudmon-plugin-smtp-upload-image
+    parent: otcinfra-upload-image-quay
+    provides: cloudmon-plugin-smtp-container-image
+    vars: *cloudmon-plugin-smtp_image_vars
+
 - project:
     merge-mode: squash-merge
     default-branch: main
     check:
-      - cloudmon-plugin-smtp-build-image
+      jobs:
+        - cloudmon-plugin-smtp-build-image
     gate:
-      - cloudmon-plugin-smtp-build-image
+      jobs:
+        - cloudmon-plugin-smtp-upload-image
