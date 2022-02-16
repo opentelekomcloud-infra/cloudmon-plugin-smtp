@@ -13,6 +13,8 @@ use statsd::Client;
 #[macro_use]
 extern crate log;
 
+use env_logger::Env;
+
 // Use Jemalloc only for musl-64 bits platforms
 #[cfg(all(target_env = "musl", target_pointer_width = "64"))]
 #[global_allocator]
@@ -83,7 +85,13 @@ fn check_server(addr: &str, name: &str, timeout: Duration, interval: u8, statsd_
 }
 
 fn main() {
-    env_logger::init();
+    let env = Env::default()
+        .filter_or("CLOUDMON_LOG_LEVEL", "info")
+        .write_style_or("CLOUDMON_LOG_STYLE", "always");
+
+    env_logger::init_from_env(env);
+
+    info!("Starting cloudmon-plugin-smtp");
     let f = std::fs::File::open("config.yaml").expect("Could not open file.");
     let config: Config = serde_yaml::from_reader(f).expect("Could not read values.");
     let pool = ThreadPool::new(4);
