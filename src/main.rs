@@ -49,8 +49,6 @@ fn check_server(addr: &str, name: &str, timeout: Duration, interval: u8, statsd_
     loop {
         debug!("Checking availability of the SMTP server {} [{}]", name, addr);
         let mut pipe = statsd_client.pipeline();
-        // Increase attempted counter
-        pipe.incr(format!("smtp.{}.attempted", name).as_str());
         /* Measure latency time */
         statsd_client.time(format!("smtp.{}", name).as_str(), || {
             let mut success: bool = false;
