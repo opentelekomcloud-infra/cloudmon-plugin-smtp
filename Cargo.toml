@@ -10,6 +10,7 @@ serde = { version = "1.0", features = ["derive"] }
 serde_yaml = "0.8"
 statsd = "^0.13.1"
 threadpool = "1.8.1"
+signal-hook = { version = "0.3.13" }
 
 [[bin]]
 name = "cloudmon-plugin-smtp"
