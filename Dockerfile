@@ -26,10 +26,10 @@ COPY ./src ./src
 
 RUN cargo build --target x86_64-unknown-linux-musl --release
 
-####################################################################################################
+##############
 ## Final image
-####################################################################################################
-FROM scratch
+##############
+FROM scratch as cloudmon-plugin-smtp
 
 # Import from builder.
 COPY --from=builder /etc/passwd /etc/passwd
@@ -45,3 +45,19 @@ USER cloudmon:cloudmon
 
 ENV PATH=/cloudmon
 CMD ["/cloudmon/cloudmon-plugin-smtp"]
+
+#################
+## Init container
+#################
+FROM alpine as cloudmon-plugin-smtp-init
+
+WORKDIR /cloudmon
+
+COPY ./grafana ./grafana
+
+RUN mkdir /cloudmon/init && tar cvfz /cloudmon/init/grafana.tar.gz grafana
+RUN rm -rf /cloudmon/grafana
+
+# Use an unprivileged user.
+USER cloudmon:cloudmon
+CMD ["/bin/sh"]

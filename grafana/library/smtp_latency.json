@@ -1,0 +1,89 @@
+{
+    "uid": "CmonSmtpLatency",
+    "name": "SMTP Server Connection Latency1",
+    "kind": 1,
+    "type": "timeseries",
+    "description": "Connection latency to the SMTP server",
+    "model": {
+      "datasource": {{ cloudmon_datasource }},
+      "description": "Connection latency to the SMTP server",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": 120000,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {{ cloudmon_datasource }},
+          "refCount": 0,
+          "refId": "A",
+          "target": "aliasByNode(stats.timers.cloudmon.$environment.$zone.smtp.$smtp_server.mean, 6)"
+        }
+      ],
+      "title": "Connection Latency",
+      "type": "timeseries"
+    }
+  }
+}
