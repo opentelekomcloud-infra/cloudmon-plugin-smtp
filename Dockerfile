@@ -55,9 +55,8 @@ WORKDIR /cloudmon
 
 COPY ./grafana ./grafana
 
+RUN rm -rf /cloudmon/init/grafana
 RUN mkdir /cloudmon/init && tar cvfz /cloudmon/init/grafana.tar.gz grafana
 RUN rm -rf /cloudmon/grafana
 
-# Use an unprivileged user.
-USER cloudmon:cloudmon
 CMD ["/bin/sh"]

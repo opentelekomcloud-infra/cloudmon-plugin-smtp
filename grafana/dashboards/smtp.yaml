@@ -1,0 +1,206 @@
+editable: true
+panels:
+  - datasource: '$cloudmon_datasource'
+    description: Connection latency to the SMTP server
+    fieldConfig:
+      defaults:
+        color:
+          mode: palette-classic
+        custom:
+          axisLabel: ''
+          axisPlacement: auto
+          barAlignment: 0
+          drawStyle: line
+          fillOpacity: 0
+          gradientMode: none
+          hideFrom:
+            legend: false
+            tooltip: false
+            viz: false
+          lineInterpolation: linear
+          lineWidth: 1
+          pointSize: 5
+          scaleDistribution:
+            type: linear
+          showPoints: auto
+          spanNulls: 120000
+          stacking:
+            group: A
+            mode: none
+          thresholdsStyle:
+            mode: 'off'
+        mappings: []
+        thresholds:
+          mode: absolute
+          steps:
+            - color: green
+              value: null
+            - color: red
+              value: 80
+        unit: ms
+      overrides: []
+    gridPos:
+      h: 9
+      w: 12
+      x: 0
+      y: 0
+    id: 1
+    libraryPanel:
+      name: SMTP Server Connection Latency1
+      uid: CmonSmtpLatency
+    options:
+      legend:
+        calcs: []
+        displayMode: list
+        placement: bottom
+      tooltip:
+        mode: single
+    targets:
+      - datasource: '$cloudmon_datasource'
+        refCount: 0
+        refId: A
+        target: aliasByNode(stats.timers.cloudmon.$environment.$zone.smtp.$smtp_server.mean,
+          6)
+    title: Connection Latency
+    type: timeseries
+  - datasource: '$cloudmon_datasource'
+    description: Percentage of 220 status codes to overall attempted requests
+    fieldConfig:
+      defaults:
+        color:
+          mode: palette-classic
+        custom:
+          axisLabel: ''
+          axisPlacement: auto
+          barAlignment: 0
+          drawStyle: line
+          fillOpacity: 0
+          gradientMode: none
+          hideFrom:
+            legend: false
+            tooltip: false
+            viz: false
+          lineInterpolation: stepBefore
+          lineWidth: 1
+          pointSize: 2
+          scaleDistribution:
+            type: linear
+          showPoints: always
+          spanNulls: 60000
+          stacking:
+            group: A
+            mode: none
+          thresholdsStyle:
+            mode: 'off'
+        decimals: 0
+        mappings: []
+        max: 100
+        min: 0
+        thresholds:
+          mode: absolute
+          steps:
+            - color: red
+              value: null
+            - color: yellow
+              value: 80
+            - color: green
+              value: 90
+        unit: percent
+      overrides: []
+    gridPos:
+      h: 9
+      w: 12
+      x: 12
+      y: 0
+    id: 2
+    libraryPanel:
+      name: SMTP Server Availability1
+      uid: CmonSmtpAvail
+    options:
+      legend:
+        calcs:
+          - lastNotNull
+        displayMode: list
+        placement: bottom
+      tooltip:
+        mode: single
+    pluginVersion: 8.3.3
+    targets:
+      - datasource: '$cloudmon_datasource'
+        refCount: 0
+        refId: A
+        target: aliasByNode(applyByNode(exclude(stats.counters.cloudmon.$environment.$zone.smtp.$smtp_server.*.count,
+          'attempted'), 6, 'asPercent(%.220.count, sumSeries(exclude(%.*.count,
+          "attempted")))', '%.pct_220'), 6)
+        textEditor: true
+    title: Server Availability
+    transformations: []
+    type: timeseries
+refresh: 1m
+schemaVersion: 34
+style: dark
+templating:
+  list:
+    - current:
+        selected: true
+        text:
+          - All
+        value:
+          - $__all
+      datasource: '$cloudmon_datasource'
+      definition: stats.counters.cloudmon.*.*.smtp.*
+      hide: 0
+      includeAll: true
+      label: Server
+      multi: true
+      name: smtp_server
+      options: []
+      query: stats.counters.cloudmon.*.*.smtp.*
+      refresh: 1
+      regex: ''
+      skipUrlSync: false
+      sort: 0
+      type: query
+    - current:
+        selected: false
+        text: All
+        value: $__all
+      datasource: '$cloudmon_datasource'
+      definition: stats.counters.cloudmon.*
+      hide: 0
+      includeAll: true
+      label: Environment
+      multi: true
+      name: environment
+      options: []
+      query: stats.counters.cloudmon.*
+      refresh: 1
+      regex: /^(?!swift)(.*)$/
+      skipUrlSync: false
+      sort: 0
+      type: query
+    - current:
+        selected: true
+        text:
+          - All
+        value:
+          - $__all
+      datasource: '$cloudmon_datasource'
+      definition: stats.counters.cloudmon.*.*
+      hide: 0
+      includeAll: true
+      label: Zone
+      multi: true
+      name: zone
+      options: []
+      query: stats.counters.cloudmon.*.*
+      refresh: 1
+      regex: /^(?!swift)(.*)$/
+      skipUrlSync: false
+      sort: 0
+      type: query
+time:
+  from: now-60m
+  to: now
+title: SMTP Statistics
+uid: CmonSmtp
